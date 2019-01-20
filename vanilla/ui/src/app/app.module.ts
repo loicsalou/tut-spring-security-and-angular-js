@@ -11,8 +11,9 @@ import {UserDetailsComponent} from './user-details/user-details.component';
 import {AuthGuardService} from './auth-guard.service';
 import {ClearGuardService} from './clear-guard.service';
 import {KeyboardEventsComponent} from './keyboard-events/keyboard-events.component';
-import {KeyboardEventsDirective} from './keyboard-events.directive';
 import {AnonymousGuardService} from './anonymous-guard.service';
+import {KeyboardEventsSequenceDirective} from './keyboard-events-sequence.directive';
+import {KeyboardEventsComboDirective} from './keyboard-events-combo.directive';
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -40,7 +41,8 @@ const routes: Routes = [
               LoginComponent,
               UserDetailsComponent,
               KeyboardEventsComponent,
-              KeyboardEventsDirective
+              KeyboardEventsSequenceDirective,
+              KeyboardEventsComboDirective
             ],
             imports: [
               RouterModule.forRoot(routes),

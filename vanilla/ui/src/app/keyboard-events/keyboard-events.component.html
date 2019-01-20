@@ -27,10 +27,16 @@
        (keydown.control.shift.t)="combo($event)">Via angular, (keydown.control.alt.t)
 <h4>Combinaison de touches, méthode spécifique via une directive, fonctionne partout</h4>
 <div style="width:100%;height:200px;background: lightblue;"
-     [appKeyboardEvents] [comboOptions]="{id:'logs',ctrl:true,alt:true,code:'KeyL'}"
+     [combo]="{id:'logs',ctrl:true,alt:true,code:'KeyL'}"
      (onCombo)="combo($event)">CTRL-ALT-L
 </div>
 <div style="width:100%;height:200px;background: lightcoral;"
-     [appKeyboardEvents] [comboOptions]="{id:'Chiffre-9',ctrl:true,shift:true,code:'Digit9'}"
+     [combo]="{id:'Chiffre-9',ctrl:true,shift:true,code:'Digit9'}"
      (onCombo)="combo($event)">CTRL-SHIFT-9
 </div>
+<h4>Séquence de touches, méthode spécifique via une directive, fonctionne partout</h4>
+<div style="width:100%;height:200px;background: lightcoral;"
+     [combo]="{id:'Chiffre-9',ctrl:true,shift:true,code:'Digit9'}"
+     (onCombo)="combo($event)">CTRL-SHIFT-9
+</div>
+

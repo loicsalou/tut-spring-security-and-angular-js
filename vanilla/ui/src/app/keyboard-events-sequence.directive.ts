@@ -5,9 +5,9 @@ import {ComboOptions} from './combo-options';
 import {stringify} from 'querystring';
 
 @Directive({
-             selector: '[appKeyboardEvents]'
+             selector: '[sequence]'
            })
-export class KeyboardEventsDirective {
+export class KeyboardEventsSequenceDirective {
   private static DEFAULT_COMBO_OPTIONS: ComboOptions = {
     id: undefined,
     ctrl: false,
@@ -16,8 +16,7 @@ export class KeyboardEventsDirective {
     scope: 'tag',
     code: undefined
   };
-  @Input() appKeyboardEvents;
-  @Input() comboOptions: ComboOptions;
+  @Input() sequence: ComboOptions;
   @Output() onCombo: EventEmitter<string> = new EventEmitter<string>();
   private destroyed$ = new Subject<void>();
   private keydownEvents = new Subject<KeyboardEvent>();
@@ -27,11 +26,11 @@ export class KeyboardEventsDirective {
   }
 
   ngOnInit() {
-    this.comboOptions = {
-      ...KeyboardEventsDirective.DEFAULT_COMBO_OPTIONS,
-      ...this.comboOptions
+    this.sequence = {
+      ...KeyboardEventsSequenceDirective.DEFAULT_COMBO_OPTIONS,
+      ...this.sequence
     };
-    this.declareCombo(this.keydownEvents, this.comboOptions);
+    this.declareCombo(this.keydownEvents, this.sequence);
   }
 
   ngOnDestroy() {
@@ -62,16 +61,16 @@ export class KeyboardEventsDirective {
       takeUntil(this.destroyed$),
       filter(event => {
         const ret = event.ctrlKey === specialKeys.ctrl && event.altKey === specialKeys.alt
-          && event.shiftKey === specialKeys.shift && event.code === this.comboOptions.code;
+          && event.shiftKey === specialKeys.shift && event.code === this.sequence.code;
         return ret;
       }),
       filter(event => {
-        const ret = this.comboOptions.scope === 'tag' ? this.hovered : true;
+        const ret = this.sequence.scope === 'tag' ? this.hovered : true;
         return ret;
       })
     ).subscribe(
       (combo: KeyboardEvent) => {
-        this.onCombo.emit(this.comboOptions.id ? this.comboOptions.id : stringify(this.comboOptions));
+        this.onCombo.emit(this.sequence.id ? this.sequence.id : stringify(this.sequence));
       }
     );
   }
