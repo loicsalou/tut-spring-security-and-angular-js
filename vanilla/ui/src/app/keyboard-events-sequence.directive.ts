@@ -1,8 +1,8 @@
 import {Directive, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {Subject} from 'rxjs';
-import {debounceTime, filter, scan, take, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, filter, scan, take, takeUntil} from 'rxjs/operators';
 import {ComboOptions} from './combo-options';
-import {stringify} from 'querystring';
+import {SequenceOptions} from './sequence-options';
 
 @Directive({
              selector: '[sequence]'
@@ -16,8 +16,9 @@ export class KeyboardEventsSequenceDirective {
     scope: 'tag',
     code: undefined
   };
-  @Input() sequence: ComboOptions;
-  @Output() onCombo: EventEmitter<string> = new EventEmitter<string>();
+  private static OMITTED_PATTERN = new RegExp(/^(Control|Shift|Alt)/);
+  @Input() sequence: SequenceOptions;
+  @Output() onSequence: EventEmitter<string> = new EventEmitter<string>();
   private destroyed$ = new Subject<void>();
   private keydownEvents = new Subject<KeyboardEvent>();
   private hovered = false;
@@ -30,7 +31,7 @@ export class KeyboardEventsSequenceDirective {
       ...KeyboardEventsSequenceDirective.DEFAULT_COMBO_OPTIONS,
       ...this.sequence
     };
-    this.declareCombo(this.keydownEvents, this.sequence);
+    this.captureSequence(this.keydownEvents, this.sequence);
   }
 
   ngOnDestroy() {
@@ -56,44 +57,31 @@ export class KeyboardEventsSequenceDirective {
   search(event: KeyboardEvent) {
   }
 
-  private declareCombo(eventSource: Subject<KeyboardEvent>, specialKeys: ComboOptions, maxWait = 300) {
-    this.keydownEvents.pipe(
-      takeUntil(this.destroyed$),
-      filter(event => {
-        const ret = event.ctrlKey === specialKeys.ctrl && event.altKey === specialKeys.alt
-          && event.shiftKey === specialKeys.shift && event.code === this.sequence.code;
-        return ret;
-      }),
-      filter(event => {
-        const ret = this.sequence.scope === 'tag' ? this.hovered : true;
-        return ret;
-      })
-    ).subscribe(
-      (combo: KeyboardEvent) => {
-        this.onCombo.emit(this.sequence.id ? this.sequence.id : stringify(this.sequence));
-      }
-    );
+  mapToChar(code: string): any {
+    if (code.startsWith('Key')) {
+      return code.substr(3, 1);
+    } else if (code.startsWith('Digit')) {
+      return code.substr(5, 1);
+    } else {
+      return ''; // caractère ignoré
+    }
   }
 
-  private declareSequenceCombo(specialKeys = {alt: true, ctrl: true, shift: false}, maxWait = 300) {
+  private captureSequence(eventSource: Subject<KeyboardEvent>, specialKeys: SequenceOptions, maxWait = 300) {
     this.keydownEvents.pipe(
       takeUntil(this.destroyed$),
-      tap(event => {
-            console.log('key is "' + event.key + '". ctrl: ' + event.ctrlKey + ', alt: ' + event.altKey + ', shift: ' + event.shiftKey);
-            console.log('code is "' + event.code + '"');
-          }
-      ),
       filter(event => event.ctrlKey === specialKeys.ctrl && event.altKey === specialKeys.alt
         && event.shiftKey === specialKeys.shift),
-      tap(event => console.log('special keys OK for key=' + event.code)),
-      tap(character => console.log('character is ' + character)),
-      // debounceTime(maxWait),
+      filter(event => specialKeys.scope === 'tag' ? this.hovered : true),
+      filter(event => {
+        const ret = !KeyboardEventsSequenceDirective.OMITTED_PATTERN.test(event.code);
+        return ret;
+      }),
       scan((events: KeyboardEvent[], event: KeyboardEvent) => {
         events.push(event);
         return events;
       }, []),
-      debounceTime(1000),
-      tap(acc => console.log('accumulater is "' + acc.join('-') + '"')),
+      debounceTime(maxWait),
       take(1)
     ).subscribe(
       (combo: KeyboardEvent[]) => {
@@ -101,33 +89,20 @@ export class KeyboardEventsSequenceDirective {
       },
       err => console.error(err),
       () => {
-        console.log('completed');
-        //this.declareCombo(specialKeys, maxWait);
+        this.captureSequence(eventSource, specialKeys, maxWait);
       }
     );
   }
 
   private processCombo(combo: KeyboardEvent[]) {
-    if (combo.length === 1) {
-      switch (combo[ 0 ].code) {
-        case 'KeyX': {
-          this.destroyed$.next();
-          console.log('FIN');
-          break;
+    const result = combo
+      .map((event: KeyboardEvent) => event.code)
+      .reduce((acc: string, eventKey: string) => {
+        if (KeyboardEventsSequenceDirective.OMITTED_PATTERN.test(eventKey)) {
+          return acc;
         }
-
-        default: {
-          console.log('Combo reçue: ' + combo.join('-'));
-        }
-
-      }
-    } else {
-      const result = combo
-        .map((event: KeyboardEvent) => event.key)
-        .reduce((acc: string, eventKey: string) => {
-          return acc + eventKey;
-        }, '');
-      console.log('combo is ' + result);
-    }
+        return acc + this.mapToChar(eventKey);
+      }, '');
+    this.onSequence.emit(result);
   }
 }

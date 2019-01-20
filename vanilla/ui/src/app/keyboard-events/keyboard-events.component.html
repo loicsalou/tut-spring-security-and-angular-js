@@ -17,7 +17,7 @@
       keyCode: ...</a> (ex 'KeyL', 'Digit9'...) attendu
     </li>
   </ul>
-  <li>elle fournit également un @Output "onCombo" qui émet l'ID du combo spécifié ou une string résultant de la
+  <li>elle fournit également un @Output "onSequence" qui émet l'ID du combo spécifié ou une string résultant de la
     concaténation des touches, ex. "ctrl-alt-KeyL"
   </li>
 </ul>
@@ -28,15 +28,21 @@
 <h4>Combinaison de touches, méthode spécifique via une directive, fonctionne partout</h4>
 <div style="width:100%;height:200px;background: lightblue;"
      [combo]="{id:'logs',ctrl:true,alt:true,code:'KeyL'}"
-     (onCombo)="combo($event)">CTRL-ALT-L
+     (onCombo)="combo1($event)">
+  <p>CTRL-ALT-L</p>
+  <p *ngIf="lastCombo1">{{lastCombo1}}</p>
 </div>
 <div style="width:100%;height:200px;background: lightcoral;"
      [combo]="{id:'Chiffre-9',ctrl:true,shift:true,code:'Digit9'}"
-     (onCombo)="combo($event)">CTRL-SHIFT-9
+     (onCombo)="combo2($event)">
+  <p>CTRL-SHIFT-9</p>
+  <p *ngIf="lastCombo2">{{lastCombo2}}</p>
 </div>
 <h4>Séquence de touches, méthode spécifique via une directive, fonctionne partout</h4>
 <div style="width:100%;height:200px;background: lightcoral;"
-     [combo]="{id:'Chiffre-9',ctrl:true,shift:true,code:'Digit9'}"
-     (onCombo)="combo($event)">CTRL-SHIFT-9
+     [sequence]="{id:'Séquence',ctrl:true,alt:true}"
+     (onSequence)="sequence($event)">
+  <p>CTRL-ALT</p>
+  <p *ngIf="lastSequence">{{lastSequence}}</p>
 </div>
 
