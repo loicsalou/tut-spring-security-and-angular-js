@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {Injectable, NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, Injectable, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {RouterModule, Routes} from '@angular/router';
@@ -10,6 +10,9 @@ import {LoginComponent} from './login.component';
 import {UserDetailsComponent} from './user-details/user-details.component';
 import {AuthGuardService} from './auth-guard.service';
 import {ClearGuardService} from './clear-guard.service';
+import {KeyboardEventsComponent} from './keyboard-events/keyboard-events.component';
+import {KeyboardEventsDirective} from './keyboard-events.directive';
+import {AnonymousGuardService} from './anonymous-guard.service';
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -25,8 +28,9 @@ export class XhrInterceptor implements HttpInterceptor {
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'home'},
   {path: 'home', component: HomeComponent, canActivate: [ ClearGuardService ]},
-  {path: 'login', component: LoginComponent, canActivate: [ ClearGuardService ]},
-  {path: 'userDetails', component: UserDetailsComponent, canActivate: [ AuthGuardService ]}
+  {path: 'login', component: LoginComponent, canActivate: [ ClearGuardService, AnonymousGuardService ]},
+  {path: 'userDetails', component: UserDetailsComponent, canActivate: [ AuthGuardService ]},
+  {path: 'keyboard', component: KeyboardEventsComponent, canActivate: [ AuthGuardService ]}
 ];
 
 @NgModule({
@@ -34,7 +38,9 @@ const routes: Routes = [
               AppComponent,
               HomeComponent,
               LoginComponent,
-              UserDetailsComponent
+              UserDetailsComponent,
+              KeyboardEventsComponent,
+              KeyboardEventsDirective
             ],
             imports: [
               RouterModule.forRoot(routes),
@@ -43,7 +49,8 @@ const routes: Routes = [
               FormsModule
             ],
             providers: [ AppService, {provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true} ],
-            bootstrap: [ AppComponent ]
+            bootstrap: [ AppComponent ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
           })
 export class AppModule {
 }

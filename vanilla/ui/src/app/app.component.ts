@@ -21,6 +21,10 @@ export class AppComponent {
     return this.app.message;
   }
 
+  get authenticated() {
+    return this.app.authenticated;
+  }
+
   logout() {
     this.app.logout().subscribe(
       success => {
@@ -30,7 +34,7 @@ export class AppComponent {
         } else {
           this;
           this.app.showMessage = true;
-          this.app.message='Le logout n\'a pu être fait car une erreur s\'est produite';
+          this.app.message = 'Le logout n\'a pu être fait car une erreur s\'est produite';
         }
       }
     );
