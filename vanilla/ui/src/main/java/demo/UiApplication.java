@@ -74,39 +74,30 @@ public class UiApplication {
     protected void configure(HttpSecurity http) throws Exception {
       http
         // gestion des CSRF, il faut le toker pour ces pages et appels de service sinon ça ne marche pas
-        .csrf().ignoringAntMatchers("/index.html", "/", "/home", "/login", "/api/login", "/api/logout")
-        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+          .csrf().ignoringAntMatchers("/index.html", "/", "/home", "/login", "/api/login", "/api/logout")
+          .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         .and()
+
         // LOGIN: la page pour la redirection, l'url du service de login et l'url de redirect en cas de succès
-        .formLogin()
-        .loginPage("/login")
-        .loginProcessingUrl("/api/login")
-        .successForwardUrl("/user")
+          .formLogin()
+          .loginPage("/login")
+          .loginProcessingUrl("/api/login")
+          .successForwardUrl("/user")
         .and()
+
         // LOGOUT: l'url du service de logout, le handler pour récupérer le token csrf d'une fois à l'autre, et le
         //         successHandler qui évite la redirection puisqu'on appelle un service de logout ==> pas de HTML
-        .logout()
-        .logoutUrl("/api/logout")
-        .addLogoutHandler(new CsrfLogoutHandler(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-        .addLogoutHandler(myLogoutHandler())
-        .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
+          .logout()
+          .logoutUrl("/api/logout")
+          .addLogoutHandler(new CsrfLogoutHandler(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+          .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
         .and()
+
         // GLOBAL SETTINGS: on doit être authentifié pour tout sauf pour certaines pages et services
-        .authorizeRequests()
-        .antMatchers("/index.html", "/", "/home", "/login").permitAll()
-        .anyRequest().authenticated()
+          .authorizeRequests()
+          .antMatchers("/index.html", "/", "/home", "/login").permitAll()
+          .anyRequest().authenticated()
       ;
-    }
-
-    private LogoutHandler myLogoutHandler() {
-      return new LogoutHandler() {
-
-        @Override
-        public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-                           Authentication authentication) {
-          System.out.println("myLogoutHandler called");
-        }
-      };
     }
   }
 }

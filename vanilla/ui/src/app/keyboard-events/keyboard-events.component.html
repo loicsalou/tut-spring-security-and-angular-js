@@ -1,0 +1,48 @@
+<h3>directive des combos keyboard</h3>
+<p>Cette directive permet d'enregistrer au niveau d'un tag une combinaison de touches qui sera détectée par la
+  directive. Celle-ci émettra alors un événement "combo" qui pourra être utilisé pour déclencher une action dans le
+  composant qui utilise la directive</p>
+<p>Fonctionnement</p>
+<ul>
+  <li>la directive [appKeyboardEvents] admet un @Input "comboOptions", objet de type {{'{'}}scope: 'doc' | 'win' |
+    'tag', , id: string, ctrl: boolean,
+    alt: boolean, shift: boolean, keyCode: ...{{'}'}}</li>
+  <ul>
+    <li>scope permet de préciser si l'on écoute les événements clavier sur le tag, le document ou l'objet
+      window
+    </li>
+    <li>alt, ctrl et shift permettent de spécifier quelles touches "modifiers" sont requises</li>
+    <li>keyCode est le <a
+      href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode" target="_blank">
+      keyCode: ...</a> (ex 'KeyL', 'Digit9'...) attendu
+    </li>
+  </ul>
+  <li>elle fournit également un @Output "onSequence" qui émet l'ID du combo spécifié ou une string résultant de la
+    concaténation des touches, ex. "ctrl-alt-KeyL"
+  </li>
+</ul>
+<h4>Combinaison de touches, méthode Angular (pseudo-events)</h4>
+<input style="width:100%;height:200px;background: lightgoldenrodyellow;"
+       placeholder="keydown.control.shift.t ne marche que sur les input"
+       (keydown.control.shift.t)="combo($event)">Via angular, (keydown.control.alt.t)
+<h4>Combinaison de touches, méthode spécifique via une directive, fonctionne partout</h4>
+<div style="width:100%;height:200px;background: lightblue;"
+     [combo]="{id:'logs',ctrl:true,alt:true,code:'KeyL'}"
+     (onCombo)="combo1($event)">
+  <p>CTRL-ALT-L</p>
+  <p *ngIf="lastCombo1">{{lastCombo1}}</p>
+</div>
+<div style="width:100%;height:200px;background: lightcoral;"
+     [combo]="{id:'Chiffre-9',ctrl:true,shift:true,code:'Digit9'}"
+     (onCombo)="combo2($event)">
+  <p>CTRL-SHIFT-9</p>
+  <p *ngIf="lastCombo2">{{lastCombo2}}</p>
+</div>
+<h4>Séquence de touches, méthode spécifique via une directive, fonctionne partout</h4>
+<div style="width:100%;height:200px;background: lightcoral;"
+     [sequence]="{id:'Séquence',ctrl:true,alt:true}"
+     (onSequence)="sequence($event)">
+  <p>CTRL-ALT</p>
+  <p *ngIf="lastSequence">{{lastSequence}}</p>
+</div>
+

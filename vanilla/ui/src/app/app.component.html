@@ -3,7 +3,8 @@
     <li class="nav-item p-3"><a routerLink="/home">Home</a></li>
     <li class="nav-item p-3"><a routerLinkActive="!app.authenticated" routerLink="/login">Login</a></li>
     <li class="nav-item p-3"><a routerLinkActive="app.authenticated" routerLink="/userDetails">Profil</a></li>
-    <li class="nav-item ml-auto"><a [ngClass]="app.authenticated ? '' : 'disabled'" (click)="logout()">Logout</a></li>
+    <li class="nav-item p-3"><a routerLinkActive="app.authenticated" routerLink="/keyboard">Combos keyboard</a></li>
+    <li class="nav-item ml-auto"><a [ngClass]="authenticated ? '' : 'disabled'" (click)="logout()">Logout</a></li>
   </ul>
 </div>
 <div class="container">
