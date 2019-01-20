@@ -1,0 +1,40 @@
+<div class="time-machine-component">
+  <div *ngIf="glasspane" class="glasspane" [ngStyle]="{'z-index': zIndexOffset}"></div>
+
+  <div *ngIf="navigation" class="navigation" [ngStyle]="getNavigationStyle()">
+    <i class="fa fa-chevron-circle-up fa-2x" (click)="nextItem($event)"></i>
+    <i class="fa fa-chevron-circle-down fa-2x" (click)="prevItem($event)"></i>
+    <i class="fa fa-search-plus fa-2x mt-3" (click)="zoomItem($event)"></i>
+    <i class="fa fa-search-minus fa-2x" (click)="resetZoomItem($event)"></i>
+
+    <button class="btn btn-primary mt-5" (click)="close()">
+      <span class="fa fa-close mr-2"></span>
+      <span>Vu</span>
+    </button>
+  </div>
+
+  <div class="tm-container" [ngStyle]="{'z-index': zIndexOffset}">
+    <div class="time-machine" [ngStyle]="getTimeMachineStyle()">
+      <div class="items" [ngStyle]="getItemsStyle()">
+        <ul>
+          <li state *ngFor="let item of items;let ix=index" class="item" (click)="moveToItem(ix)"
+              [ngStyle]="getHistoryItemStyle(ix)">
+            <div class="item-content">
+              <div class="header">
+                <ng-container *ngTemplateOutlet="headerTemplate; context: {$implicit: item, index: ix}"></ng-container>
+              </div>
+              <div class="panel">
+                <ng-container *ngIf="panelTemplate">
+                  <ng-container *ngTemplateOutlet="panelTemplate; context: {$implicit: item, index: ix}"></ng-container>
+                </ng-container>
+              </div>
+              <div class="footer">
+                <ng-container *ngTemplateOutlet="footerTemplate; context: {$implicit: item, index: ix}"></ng-container>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

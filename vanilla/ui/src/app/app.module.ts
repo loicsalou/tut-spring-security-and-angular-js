@@ -14,6 +14,8 @@ import {KeyboardEventsComponent} from './keyboard-events/keyboard-events.compone
 import {AnonymousGuardService} from './anonymous-guard.service';
 import {KeyboardEventsSequenceDirective} from './keyboard-events-sequence.directive';
 import {KeyboardEventsComboDirective} from './keyboard-events-combo.directive';
+import {TimemachineComponent} from './timemachine/timemachine.component';
+import {TemplateDirective} from './timemachine/template.directive';
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -42,7 +44,9 @@ const routes: Routes = [
               UserDetailsComponent,
               KeyboardEventsComponent,
               KeyboardEventsSequenceDirective,
-              KeyboardEventsComboDirective
+              KeyboardEventsComboDirective,
+              TimemachineComponent,
+              TemplateDirective
             ],
             imports: [
               RouterModule.forRoot(routes),

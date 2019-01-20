@@ -1,0 +1,109 @@
+//@import "../../../../scss/theme/zas-theme";
+
+// le composant tout entier
+div.time-machine-component {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+// le glasspane couvre le composant tout entier
+div.glasspane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #f6f6f6;
+  opacity: .7;
+}
+
+.message {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border: thin solid grey;
+  border-radius: 10px;
+  background: lightgreen;
+  padding: 10px;
+  text-align: center;
+
+  & > h2 {
+    top: 50%;
+  }
+}
+
+// le container sera décalé dynamiquement vers le bas pour "caser" l'historique
+// le calcul est fonction du nombre d'éléments
+div.tm-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+
+  div.time-machine {
+    display: flex;
+    margin: auto auto;
+  }
+
+  div.items {
+    text-align: center;
+    position: relative;
+    left: 0;
+    top: 0;
+    height: 100%;
+  }
+
+  div.item-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: left;
+
+    & > div.header, & > div.footer {
+      cursor: pointer;
+      flex-grow: 0;
+    }
+
+    & > div.panel {
+      flex-grow: 1;
+    }
+  }
+
+  li {
+    top: 80px;
+    transition: all .3s ease-in-out;
+    transition-delay: 0ms;
+    transition-duration: 250ms;
+  }
+
+  li.item {
+    box-shadow: 10px 5px 12px #D5D5D5;
+    left: 25px;
+    list-style-type: none;
+    position: absolute;
+  }
+}
+
+div.navigation {
+  background: #fff;
+  border: thin solid grey;
+  border-radius: 5px;
+  box-shadow: 10px 5px 12px #D5D5D5;
+  padding: 5px;
+  position: fixed;
+  right: 50px;
+  text-align: center;
+  top: 250px;
+  vertical-align: center;
+
+  & > i {
+    cursor: pointer;
+    display: block;
+  }
+}
