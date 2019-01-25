@@ -99,7 +99,7 @@ export class TimemachineComponent implements OnInit, AfterContentInit, OnDestroy
     this.calcCssForItem(0);
     this.wheelEventSubscription = this.wheelEvent$.pipe(
       throttleTime(Math.abs(this.throttletime))
-    ).subscribe(ev => this.mousewheelEvent(ev));
+    ).subscribe((ev: WheelEvent) => this.mousewheelEvent(ev));
   }
 
   ngOnDestroy() {

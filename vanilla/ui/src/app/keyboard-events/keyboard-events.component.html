@@ -22,13 +22,14 @@
     concaténation des touches, ex. "ctrl-alt-KeyL"
   </li>
 </ul>
-<zas-timemachine *ngIf="showHisto" [items]="histoData" [glasspane]="true"
-                 height="300" width="500">
+<zas-timemachine *ngIf="showHisto" [items]="histoData" [glasspane]="true" [navigation]="true"
+                 [itemStyle]="{'background': '#fff','border':'thin solid grey', 'z-index': '1030'}"
+                 height="300" width="500" (closed)="toggleHistory()">
   <ng-template zasTemplate="header" let-index="index" let-item>
     <p>Header</p>
   </ng-template>
   <ng-template zasTemplate="panel" let-item>
-    {{data}}
+    {{item}}
   </ng-template>
 </zas-timemachine>
 <h4>Combinaison de touches, méthode Angular (pseudo-events)</h4>
